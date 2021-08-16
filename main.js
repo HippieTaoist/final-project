@@ -23,6 +23,13 @@ let oneArrayList = [];
 let noteIdNum = 1;
 let listIdNum = 1;
 
+function editNote(note) {
+    let editStartText = oneArrayNote[note.id - 1].details
+    console.log('editStartText', editStartText)
+}
+
+
+
 
 function buildCard(obj, noteList) {
     let div = document.createElement("div");
@@ -119,18 +126,23 @@ noteSaveButton.addEventListener('click', function () {
     console.log('')
 })
 
+// modal development
 const modal = document.getElementById("modal-holder");
 const closeButton = document.querySelector(".close-button");
 
-
+// bring modal to the front
 function modalEnergizer(item) {
-    console.log('item', item)
+    // console.log('item', item)
 
 
-    console.log('modalEnergizer', item);
+    // console.log('modalEnergizer', item);
+    let itemID = item.id
+    // console.log('itemID', itemID)
+    // console.log('oneArrayNote', oneArrayNote[itemID - 1])
 
-    let div = document.createElement('div');
-    div.id = 'temp-modal-div';
+    // bring in and display note selected
+    let modalDiv = document.createElement('div');
+    modalDiv.id = 'temp-modal-div';
     let h1 = document.createElement("h1");
     h1.id = 'h1-modal-temp'
     h1.innerText = item.title;
@@ -139,16 +151,36 @@ function modalEnergizer(item) {
     divcontent.innerText = item.details
     let modalContent = document.querySelector('.modal-content')
     // console.log(modalContent)
+    // attach to modal
+    modalDiv.append(h1)
+    modalDiv.append(divcontent)
+    modalContent.append(modalDiv)
 
-    div.append(h1)
-    div.append(divcontent)
-    modalContent.append(div)
+    // create and call - edit / delete buttons
+    let editDeleteDiv = document.createElement('div');
+    editDeleteDiv.id = 'edit-delete-div';
+    editDeleteDiv.className = 'temp-modal-div'
+    let editDiv = document.createElement('button');
+    editDiv.className = 'temp-modal-div'
+    editDiv.id = 'edit-div';
+    let deleteDiv = document.createElement('button');
+    deleteDiv.className = 'temp-modal-div';
+    deleteDiv.id = 'delete-div';
+
+    editDeleteDiv.append(editDiv);
+    editDeleteDiv.append(deleteDiv);
+    modalDiv.append(editDeleteDiv)
+
+    // add event listeners to buttons
+    // call apporpriate fuction per listener
+
+
+
+
     toggleModal()
 }
 
-function editNote() {
 
-}
 
 function deEnergizeModal() {
     let tempModalDiv = document.getElementById('temp-modal-div');
