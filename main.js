@@ -39,12 +39,7 @@ function buildCard(obj, noteList) {
         textArea.innerText = obj.details;
         div.append(textArea)
 
-        div.addEventListener('click', function () {
-            div.classList.add('show-modal')
-            modalEnergizer(obj)
 
-
-        })
     }
     if (noteList === 'list') {
         if (noteList === 'list') {
@@ -61,6 +56,13 @@ function buildCard(obj, noteList) {
         }
 
     }
+
+    div.addEventListener('click', function () {
+
+        modalEnergizer(obj)
+
+
+    })
 
 }
 // this function refreshes the display of notes saved.
@@ -117,22 +119,57 @@ noteSaveButton.addEventListener('click', function () {
     console.log('')
 })
 
+const modal = document.getElementById("modal-holder");
+const closeButton = document.querySelector(".close-button");
+
+
 function modalEnergizer(item) {
-    console.log('modalEnergizer', item)
-    let h1 = document.createElement("h1")
-    h1, innerText = item.title
+    console.log('item', item)
+
+
+    console.log('modalEnergizer', item);
+
+    let div = document.createElement('div');
+    div.id = 'temp-modal-div';
+    let h1 = document.createElement("h1");
+    h1.id = 'h1-modal-temp'
+    h1.innerText = item.title;
     let divcontent = document.createElement('div')
+    divcontent.id = 'divcontent-modal-temp'
     divcontent.innerText = item.details
     let modalContent = document.querySelector('.modal-content')
-    console.log(modalContent)
+    // console.log(modalContent)
 
-    modalContent.append(h1)
-    modalContent.append(divcontent)
+    div.append(h1)
+    div.append(divcontent)
+    modalContent.append(div)
+    toggleModal()
+}
 
-
+function editNote() {
 
 }
 
+function deEnergizeModal() {
+    let tempModalDiv = document.getElementById('temp-modal-div');
+    tempModalDiv.remove()
+    // modal.innerHTML = '<div class = "modal-content"><span class="close-button">×</span></div>'
+    toggleModal()
 
+}
+
+function windowOnClick(event) {
+    if (event.target === modal) {
+        toggleModal();
+    }
+}
+
+function toggleModal() {
+    modal.classList.toggle('show-modal')
+}
+
+closeButton.addEventListener('click', deEnergizeModal);
+
+// window.addEventListener('click', toggleModal);
 
 // save elements to oneArrayList when button clicked
