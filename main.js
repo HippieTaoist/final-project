@@ -1,5 +1,9 @@
 // set note / list selector to default at note
 let noteListSelector = 1;
+//grab universal elements from
+let card = document.querySelectorAll('.card')
+let footer = document.querySelector('#footer')
+
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // note section
@@ -34,6 +38,13 @@ function buildCard(obj, noteList) {
         textArea.className = 'note-details';
         textArea.innerText = obj.details;
         div.append(textArea)
+
+        div.addEventListener('click', function () {
+            div.classList.add('show-modal')
+            modalEnergizer(obj)
+
+
+        })
     }
     if (noteList === 'list') {
         if (noteList === 'list') {
@@ -50,6 +61,7 @@ function buildCard(obj, noteList) {
         }
 
     }
+
 }
 // this function refreshes the display of notes saved.
 function refreshNoteDisplay() {
@@ -60,7 +72,9 @@ function refreshNoteDisplay() {
 
     oneArrayNote.forEach(notem => {
         buildCard(notem, 'note')
+
     })
+
 }
 
 function saveAndPush(style, itemToPush) {
@@ -88,7 +102,6 @@ function setIDNum(arrayToSetFrom) {
 
 refreshNoteDisplay()
 
-
 // save elements to oneArrayNote when button clicked
 noteSaveButton.addEventListener('click', function () {
     let note = []
@@ -103,6 +116,23 @@ noteSaveButton.addEventListener('click', function () {
     console.log('');
     console.log('')
 })
+
+function modalEnergizer(item) {
+    console.log('modalEnergizer', item)
+    let h1 = document.createElement("h1")
+    h1, innerText = item.title
+    let divcontent = document.createElement('div')
+    divcontent.innerText = item.details
+    let modalContent = document.querySelector('.modal-content')
+    console.log(modalContent)
+
+    modalContent.append(h1)
+    modalContent.append(divcontent)
+
+
+
+}
+
 
 
 // save elements to oneArrayList when button clicked
