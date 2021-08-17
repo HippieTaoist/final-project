@@ -8,9 +8,8 @@ let footer = document.querySelector('#footer')
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // note section
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// grasb elements
+// grab elements
 let noteTitle = document.getElementById("note-title");
-
 let noteDetails = document.getElementById("note-details");
 let noteSaveButton = document.getElementById("note-save-button");
 let noteDisplayArea = document.getElementById("display-notes")
@@ -24,23 +23,22 @@ let noteIdNum = 1;
 let listIdNum = 1;
 
 function editNote(note) {
+    // associate internal text for when person edit note.
     let editStartTitleText = oneArrayNote[note.id - 1].title
     let editStartDetailsText = oneArrayNote[note.id - 1].details
     console.log('editStartText', editStartTitleText, editStartDetailsText)
 
-    let modalDiv = document.getElementById('modal-div')
-    console.log('')
+    // let modalDiv = document.getElementById('modal-div')
+    // console.log('')
 
     let h1 = document.getElementById("h1-modal")
-    console.log('h1', h1)
-
     let divContent = document.getElementById('divcontent-modal');
-
     let h1EditText = document.createElement('input');
+    let divEditText = document.createElement('textarea');
+
     h1EditText.value = editStartTitleText;
     console.log('h1EditText', h1EditText)
 
-    let divEditText = document.createElement('textarea');
     divEditText.innerText = editStartDetailsText;
     console.log('divEditText', divEditText.innerText)
 
@@ -54,6 +52,13 @@ function editNote(note) {
 
 
 
+}
+
+function deleteNote(note) {
+    console.log('deleteNote', note)
+    oneArrayNote.splice([note.id - 1], 1)
+    deEnergizeModal()
+    refreshNoteDisplay()
 }
 
 
@@ -102,7 +107,7 @@ function buildCard(obj, noteList) {
 }
 // this function refreshes the display of notes saved.
 function refreshNoteDisplay() {
-    console.log("refreshNoteDisplay", 'that is all');
+    // console.log("refreshNoteDisplay", 'that is all');
 
     // clear Note divs
     noteDisplayArea.textContent = '';
@@ -119,7 +124,7 @@ function saveAndPush(style, itemToPush) {
         itemToPush.id = setIDNum(oneArrayNote)
         itemToPush.title = noteTitle.value;
         itemToPush.details = noteDetails.value
-        console.log(itemToPush.title, itemToPush.details)
+        // console.log(itemToPush.title, itemToPush.details)
         oneArrayNote.push(itemToPush)
     }
 }
@@ -129,7 +134,7 @@ function setIDNum(arrayToSetFrom) {
 
     if (arrayToSetFrom === oneArrayNote) {
         noteIdNum = idNum
-        console.log('setIDNum', idNum)
+        // console.log('setIDNum', idNum)
         return noteIdNum;
     }
     if (arrayToSetFrom === oneArrayList) {
@@ -142,16 +147,15 @@ refreshNoteDisplay()
 // save elements to oneArrayNote when button clicked
 noteSaveButton.addEventListener('click', function () {
     let note = []
-    console.log('noteSaveButton clicked')
+    // console.log('noteSaveButton clicked')
     saveAndPush('note', note)
-    console.log(oneArrayNote)
+    // console.log(oneArrayNote)
     localStorage.setItem('oneArrayNote', JSON.stringify(oneArrayNote))
-    console.log(JSON.parse(localStorage.getItem('oneArrayNote')));
+    // console.log(JSON.parse(localStorage.getItem('oneArrayNote')));
     refreshNoteDisplay();
     console.log('');
     console.log('');
-    console.log('');
-    console.log('')
+
 })
 
 // modal development
@@ -175,45 +179,31 @@ function modalEnergizer(item) {
     modalContent.append(divModal)
 
 
-    // console.log('modalEnergizer', item);
     let itemID = item.id
-    // console.log('itemID', itemID)
-    // console.log('oneArrayNote', oneArrayNote[itemID - 1])
 
     // bring in and display note selected
     let modalDiv = document.getElementById('modal-div');
-    // modalDiv.id = 'temp-modal-div';
-
-
     let h1 = document.getElementById('h1-modal');
-    console.log('h1', h1)
-    // h1.id = 'h1-modal-temp'
-
-
-
     let divcontent = document.getElementById('divcontent-modal')
-    // divcontent.id = 'divcontent-modal-temp'
-
-
-    // console.log(modalContent)
-    // attach to modal
 
     h1.innerText = item.title;
     divcontent.innerText = item.details
 
 
-
-    // create and call - edit / delete buttons
+    // create and call - edit / delete div
     let editDeleteDiv = document.createElement('div');
     editDeleteDiv.id = 'edit-delete-div';
-    editDeleteDiv.className = 'temp-modal-div'
+    editDeleteDiv.className = 'edit-delete-buttons'
+
+    // call create edit button
     let editDiv = document.createElement('button');
-    editDiv.className = 'temp-modal-div'
+    editDiv.className = 'edit-delete-buttons'
     editDiv.id = 'edit-div';
     editDiv.innerText = 'EDIT'
-    editDiv.style.fontStretch = 'auto'
+
+    // call create delete button
     let deleteDiv = document.createElement('button');
-    deleteDiv.className = 'temp-modal-div';
+    deleteDiv.className = 'edit-delete-buttons';
     deleteDiv.id = 'delete-div';
 
     editDeleteDiv.append(editDiv);
@@ -222,10 +212,15 @@ function modalEnergizer(item) {
 
     // add event listeners to buttons
     // call apporpriate fuction per listener
-
+    // Send item for editing
     editDiv.addEventListener('click', function () {
-        // console.log('e', e)
+
         editNote(item)
+    })
+
+    deleteDiv.addEventListener('click', function () {
+
+        deleteNote(item)
     })
 
 
