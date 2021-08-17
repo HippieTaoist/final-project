@@ -24,27 +24,55 @@ let noteIdNum = 1;
 let listIdNum = 1;
 
 function editNote(note) {
-    let editStartText = oneArrayNote[note.id - 1].details
-    console.log('editStartText', editStartText)
+    let editStartTitleText = oneArrayNote[note.id - 1].title
+    let editStartDetailsText = oneArrayNote[note.id - 1].details
+    console.log('editStartText', editStartTitleText, editStartDetailsText)
+
+    let modalDiv = document.getElementById('modal-div')
+    console.log('')
+
+    let h1 = document.getElementById("h1-modal")
+    console.log('h1', h1)
+
+    let divContent = document.getElementById('divcontent-modal');
+
+    let h1EditText = document.createElement('input');
+    h1EditText.value = editStartTitleText;
+    console.log('h1EditText', h1EditText)
+
+    let divEditText = document.createElement('textarea');
+    divEditText.innerText = editStartDetailsText;
+    console.log('divEditText', divEditText.innerText)
+
+    h1.innerHTML = `<input value='${editStartTitleText}'/>`
+    divContent.innerHTML = `<textarea >${editStartDetailsText}</textarea>`;
+
+    let modalContent = document.querySelector('.modal-content')
+    // console.log(modalContent)
+
+
+
+
+
 }
 
 
 
 
 function buildCard(obj, noteList) {
-    let div = document.createElement("div");
-    div.className = 'card fade-in'
-    noteDisplayArea.append(div);
+    let card = document.createElement("div");
+    card.className = 'card fade-in'
+    noteDisplayArea.append(card);
     let h1 = document.createElement("h1");
     h1.className = 'headline'
     h1.innerText = obj.title;
-    div.append(h1)
+    card.append(h1)
 
     if (noteList === 'note') {
         let textArea = document.createElement("div")
         textArea.className = 'note-details';
         textArea.innerText = obj.details;
-        div.append(textArea)
+        card.append(textArea)
 
 
     }
@@ -64,7 +92,7 @@ function buildCard(obj, noteList) {
 
     }
 
-    div.addEventListener('click', function () {
+    card.addEventListener('click', function () {
 
         modalEnergizer(obj)
 
@@ -133,6 +161,18 @@ const closeButton = document.querySelector(".close-button");
 // bring modal to the front
 function modalEnergizer(item) {
     // console.log('item', item)
+    let divModal = document.createElement('div')
+    divModal.id = 'modal-div';
+    let divH1 = document.createElement('h1')
+    divH1.id = 'h1-modal'
+    let divCon = document.createElement('div')
+    divCon.id = 'divcontent-modal'
+    let modalContent = document.querySelector('.modal-content')
+
+
+    divModal.append(divH1)
+    divModal.append(divCon)
+    modalContent.append(divModal)
 
 
     // console.log('modalEnergizer', item);
@@ -141,20 +181,27 @@ function modalEnergizer(item) {
     // console.log('oneArrayNote', oneArrayNote[itemID - 1])
 
     // bring in and display note selected
-    let modalDiv = document.createElement('div');
-    modalDiv.id = 'temp-modal-div';
-    let h1 = document.createElement("h1");
-    h1.id = 'h1-modal-temp'
-    h1.innerText = item.title;
-    let divcontent = document.createElement('div')
-    divcontent.id = 'divcontent-modal-temp'
-    divcontent.innerText = item.details
-    let modalContent = document.querySelector('.modal-content')
+    let modalDiv = document.getElementById('modal-div');
+    // modalDiv.id = 'temp-modal-div';
+
+
+    let h1 = document.getElementById('h1-modal');
+    console.log('h1', h1)
+    // h1.id = 'h1-modal-temp'
+
+
+
+    let divcontent = document.getElementById('divcontent-modal')
+    // divcontent.id = 'divcontent-modal-temp'
+
+
     // console.log(modalContent)
     // attach to modal
-    modalDiv.append(h1)
-    modalDiv.append(divcontent)
-    modalContent.append(modalDiv)
+
+    h1.innerText = item.title;
+    divcontent.innerText = item.details
+
+
 
     // create and call - edit / delete buttons
     let editDeleteDiv = document.createElement('div');
@@ -163,6 +210,8 @@ function modalEnergizer(item) {
     let editDiv = document.createElement('button');
     editDiv.className = 'temp-modal-div'
     editDiv.id = 'edit-div';
+    editDiv.innerText = 'EDIT'
+    editDiv.style.fontStretch = 'auto'
     let deleteDiv = document.createElement('button');
     deleteDiv.className = 'temp-modal-div';
     deleteDiv.id = 'delete-div';
@@ -174,6 +223,11 @@ function modalEnergizer(item) {
     // add event listeners to buttons
     // call apporpriate fuction per listener
 
+    editDiv.addEventListener('click', function () {
+        // console.log('e', e)
+        editNote(item)
+    })
+
 
 
 
@@ -183,7 +237,7 @@ function modalEnergizer(item) {
 
 
 function deEnergizeModal() {
-    let tempModalDiv = document.getElementById('temp-modal-div');
+    let tempModalDiv = document.getElementById('modal-div');
     tempModalDiv.remove()
     // modal.innerHTML = '<div class = "modal-content"><span class="close-button">×</span></div>'
     toggleModal()
