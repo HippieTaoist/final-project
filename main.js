@@ -4,6 +4,9 @@ let noteListSelector = 1;
 let card = document.querySelectorAll('.card')
 let footer = document.querySelector('#footer')
 
+let editSwitch = 'True'
+let editObj
+
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // note section
@@ -23,36 +26,76 @@ let noteIdNum = 1;
 let listIdNum = 1;
 
 function editNote(note) {
+    editSwitch = 'True'
     // associate internal text for when person edit note.
-    let editStartTitleText = oneArrayNote[note.id - 1].title
-    let editStartDetailsText = oneArrayNote[note.id - 1].details
-    console.log('editStartText', editStartTitleText, editStartDetailsText)
+    editObj = oneArrayNote[note.id - 1]
+    console.log(editObj)
+    let editStartTitleText = editObj.title
+    let editStartDetailsText = editObj.details
+    console.log('editStartText', editStartTitleText, editStartDetailsText, editObj)
 
     // let modalDiv = document.getElementById('modal-div')
     // console.log('')
 
+    let saveButton = document.getElementById('edit-div');
+    let cancelButton = document.getElementById('delete-div');
+    saveButton.innerText = 'SAVE';
+    saveButton.className = 'save-confirm-buttons'
+
+
+    cancelButton.innerText = 'CANCEL'
+    cancelButton.className = 'save-confirm-buttons'
+
+    let modalDiv = document.getElementById('modal-div')
     let h1 = document.getElementById("h1-modal")
     let divContent = document.getElementById('divcontent-modal');
     let h1EditText = document.createElement('input');
     let divEditText = document.createElement('textarea');
+    divEditText.className = 'edited-details'
 
     h1EditText.value = editStartTitleText;
-    console.log('h1EditText', h1EditText)
+    console.log('h1EditText', h1EditText.value)
 
     divEditText.innerText = editStartDetailsText;
     console.log('divEditText', divEditText.innerText)
 
-    h1.innerHTML = `<input value='${editStartTitleText}'/>`
-    divContent.innerHTML = `<textarea >${editStartDetailsText}</textarea>`;
+    h1.style.visibility = 'hidden'
+    // h1.innerHTML = `<input value='${editStartTitleText}'/>`
+    divContent.style.visibility = 'hidden';
+    // divContent.innerHTML = `<textarea id='edited-details'>${editStartDetailsText}</textarea>`;
+    modalDiv.style.display = 'flex';
+    modalDiv.style.flexDirection = 'column';
+    modalDiv.prepend(divEditText)
 
-    let modalContent = document.querySelector('.modal-content')
-    // console.log(modalContent)
+    modalDiv.prepend(h1EditText)
+
+
+    let editedDetails = document.querySelector('.edited-details')
+    console.log('editedDetails', editedDetails)
 
 
 
+    saveButton.addEventListener('click', function () {
+        if (editSwitch === 'True') {
 
+            editObj.title = h1EditText.value
+            console.log('editedDetails', editedDetails.value)
+            editObj.details = editedDetails.value;
+            console.log('editOBJ', editObj)
+            oneArrayNote[note.id - 1] = editObj
+            refreshNoteDisplay()
+            toggleModal()
+        }
+    })
 
 }
+
+// console.log(modalContent)
+
+
+
+refreshNoteDisplay();
+
 
 function deleteNote(note) {
     console.log('deleteNote', note)
@@ -124,7 +167,7 @@ function saveAndPush(style, itemToPush) {
         itemToPush.id = setIDNum(oneArrayNote)
         itemToPush.title = noteTitle.value;
         itemToPush.details = noteDetails.value
-        // console.log(itemToPush.title, itemToPush.details)
+        console.log(itemToPush.title, itemToPush.details)
         oneArrayNote.push(itemToPush)
     }
 }
@@ -164,6 +207,7 @@ const closeButton = document.querySelector(".close-button");
 
 // bring modal to the front
 function modalEnergizer(item) {
+    editSwitch = 'False'
     // console.log('item', item)
     let divModal = document.createElement('div')
     divModal.id = 'modal-div';
@@ -205,6 +249,7 @@ function modalEnergizer(item) {
     let deleteDiv = document.createElement('button');
     deleteDiv.className = 'edit-delete-buttons';
     deleteDiv.id = 'delete-div';
+    deleteDiv.innerText = 'DELETE'
 
     editDeleteDiv.append(editDiv);
     editDeleteDiv.append(deleteDiv);
@@ -214,13 +259,19 @@ function modalEnergizer(item) {
     // call apporpriate fuction per listener
     // Send item for editing
     editDiv.addEventListener('click', function () {
+        if (editSwitch === 'False') {
+            editNote(item)
+        }
 
-        editNote(item)
     })
 
     deleteDiv.addEventListener('click', function () {
-
-        deleteNote(item)
+        if (editSwitch === 'False') {
+            deleteNote(item)
+        }
+        if (editSwitch === 'True') {
+            refreshNoteDisplay()
+        }
     })
 
 
