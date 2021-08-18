@@ -1,3 +1,10 @@
+body {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+}
+
 section#header {
     background-color: green;
     display: flex;
@@ -8,15 +15,41 @@ section#header {
 }
 
 section#note-list-selector {
-    background-color: grey;
-    display: flex;
-    justify-content: center;
-
+    background-color: transparent;
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: center; */
+    border-radius: 5%;
+    /* width: 80%; */
+    height: fit-content;
 }
 
 div#note-section {
     display: flex;
+    justify-content: center;
+    margin: auto;
+    background-color: purple;
+    /* align-items: space-around; */
     flex-direction: column;
+    padding: 5px;
+    width: 20%;
+    height: fit-content;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+div#list-section {
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    background-color: green;
+    padding 5px;
+    align-items: center;
+    flex-direction: column;
+    padding: 10px;
+    width: 20%;
+    height: fit-content;
+    border-radius: 10px
 }
 
 input#note-details {
@@ -24,46 +57,85 @@ input#note-details {
 }
 
 section#display-cards-container {
-    background-color: blue;
+    /* background-color: blue; */
     height: fit-content;
+    display: flex;
+    justify-content: center;
+
 
 }
 
 div#display-notes {
     display: flex;
+    /* border: 5px solid purple; */
     justify-content: center;
     flex-wrap: wrap;
+    width: auto;
     transition-delay: 2s;
+
+}
+
+div#display-lists {
+    display: flex;
+    justify-content: center;
+
+    flex-wrap: wrap;
+    transition-delay: 2s;
+
 }
 
 h1.headline {
     position: absolute;
-    width 100%;
-    max-width: 80%;
+
+    max-width: 95%;
     overflow: hidden;
     text-transform: full-width;
     top: 18%;
     left: -5%;
-    background-color: gray;
-    height: auto;
+    background-color: purple;
+    height: fit-content;
     font-weight: bold;
     font-size: medium;
     z-index: 1;
     color: white;
     white-space: nowrap;
+    padding-left: 10px;
+
+    padding-right: 10px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    font-size: 125%;
+    border-top-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 12px 12px 2px 1px rgba(242, 0, 255, 0.282);
 }
 
 
 div.note-details {
     width: 100%;
     height: 100%;
-
     text-align: center;
-    background-color: red;
+    background-color: #cc0000;
     resize: none;
     overflow: hidden;
-    read-only: read-only;
-    border-radius: 25px
+    border: #FF6600 5px solid;
+    border-radius: 3px;
+    /* read-only: read-only; */
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    font-size: 200%;
+
+    box-shadow: inset 15px 0 10px purple, inset -15px 0 10px purple;
+}
+
+div.note-details:hover {
+    background-color: purple
+}
+
+div.note-details:active {
+    background-color: #ff6600;
+    box-shadow: inset 100% solid #c00
 }
 
 section#footer {
@@ -78,11 +150,11 @@ section#footer {
     position: relative;
     display: flex;
     flex-direction: column;
-    border: 1px solid red;
-    width: 20%;
-    height: auto;
+    /* border: 1px solid red; */
+    /* width: 20%; */
+    width: 125px;
+    height: 125px;
     margin: 20px;
-    background-color: beige;
     /* overflow: hidden; */
     resize: block;
     background-color: transparent;
@@ -110,4 +182,79 @@ section#footer {
         max-height: 20%;
 
     }
+}
+
+/* Modal Attempt */
+
+
+.modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.1);
+    transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 1rem 1.5rem;
+    width: 24rem;
+    border-radius: 0.5rem;
+}
+
+.close-button {
+    float: right;
+    width: 1.5rem;
+    line-height: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    border-radius: .25rem;
+    background-color: lightgray;
+}
+
+
+.close-button:hover {
+    background-color: darkgray;
+}
+
+.show-modal {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1.0);
+    transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+}
+
+#edit-delete-div {
+    /* visibility: inherit; */
+    display: flex;
+    justify-content: space-evenly;
+    marign-top: 50px;
+}
+
+#edit-div {
+    background-color: green;
+    color: red;
+    width: 25%;
+    height: 100px;
+}
+
+#delete-div {
+    background-color: red;
+    color: green;
+    /* visibility: inherit; */
+    width: 25%;
+}
+
+#note-or-list-container {
+    display: flex;
+    justify-content: center;
 }
