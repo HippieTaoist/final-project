@@ -8,6 +8,8 @@ let editSwitch = 'True'
 let editObj
 
 
+
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // note section
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -16,15 +18,55 @@ let noteTitle = document.getElementById("note-title");
 let noteDetails = document.getElementById("note-details");
 let noteSaveButton = document.getElementById("note-save-button");
 let noteDisplayArea = document.getElementById("display-notes")
+// +++++++++++++++++++++++++++++++
+// list section
+// +++++++++++++++++++++++++++++++
+let listSection = document.getElementById("list-section");
+let listTitle = document.getElementById("list-title");
+let listSaveButton = document.getElementById("list-save")
+let listDisplayArea = document.getElementById("display-lists")
+
+let makeNewList = {
+    title: 'New List For You',
+    details: 'enter your new list item here',
+    items: ['milk', 'cheese', 'butter']
+}
+
+console.log(makeNewList.title);
 
 // Save Array (Add keywqords later?)
 let oneArrayNote = [];
-let oneArrayList = [];
+let oneArrayList = [makeNewList];
 
 // idNum
 let noteIdNum = 1;
 let listIdNum = 1;
 
+function selectList(optionValue) {
+    console.log('optionValue', optionValue);
+
+}
+
+function dynamicDropdownList(oneArrayList) {
+
+    let select = document.getElementById('list-selector')
+    let initialOption = document.getElementById('option-new-list');
+    // console.log('initialOption', initialOption);
+    // select.id = 'list-selector';
+    // select.onchange = 'selectList()';
+    // listSection.append(select);
+
+    oneArrayList.forEach(list => {
+        let option = document.createElement('option');
+        console.log('list.title', list.title);
+        option.innerText = list.title
+        option.details = list.details
+        console.log('list', list)
+        select.append(option)
+    })
+}
+
+// edit note in modal
 function editNote(note) {
     editSwitch = 'True'
     // associate internal text for when person edit note.
@@ -57,6 +99,7 @@ function editNote(note) {
     console.log('h1EditText', h1EditText.value)
 
     divEditText.innerText = editStartDetailsText;
+
     console.log('divEditText', divEditText.innerText)
 
     h1.style.visibility = 'hidden'
@@ -83,20 +126,24 @@ function editNote(note) {
             editObj.details = editedDetails.value;
             console.log('editOBJ', editObj)
             oneArrayNote[note.id - 1] = editObj
+            modalDiv.remove(divEditText);
+            h1EditText.remove()
             refreshNoteDisplay()
             toggleModal()
+        }
+    })
+    cancelButton.addEventListener('click', function () {
+        if (editSwitch === 'True') {
+            deEnergizeModal()
         }
     })
 
 }
 
-// console.log(modalContent)
-
-
-
+// refresh display area
 refreshNoteDisplay();
 
-
+// delete note from array
 function deleteNote(note) {
     console.log('deleteNote', note)
     oneArrayNote.splice([note.id - 1], 1)
@@ -106,59 +153,89 @@ function deleteNote(note) {
 
 
 
-
+// build cards to display in area
 function buildCard(obj, noteList) {
-    let card = document.createElement("div");
-    card.className = 'card fade-in'
-    noteDisplayArea.append(card);
-    let h1 = document.createElement("h1");
-    h1.className = 'headline'
-    h1.innerText = obj.title;
-    card.append(h1)
 
+    console.log('notelist', noteList)
     if (noteList === 'note') {
+        let card = document.createElement("div");
+        card.className = 'card fade-in'
+        noteDisplayArea.append(card);
+        let h1 = document.createElement("h1");
+        h1.className = 'headline'
+        h1.innerText = obj.title;
+        card.append(h1)
         let textArea = document.createElement("div")
         textArea.className = 'note-details';
         textArea.innerText = obj.details;
         card.append(textArea)
+        card.addEventListener('click', function () {
 
+            modalEnergizer(obj)
+
+
+        })
 
     }
     if (noteList === 'list') {
-        if (noteList === 'list') {
-            // define and class ul items to be created
-            let ul = document.createElement("ul");
-            ul.className = 'list';
+        let card = document.createElement("div");
+        card.className = 'card fade-in';
+        listDisplayArea.append(card);
+        // define and class ul items to be created
+        let ul = document.createElement("ul");
+        ul.className = 'list';
+        card.append(ul)
+        // create, class and populate ol list items
+        console.log('obj', obj)
+        // setup reference for index
+        console.log('items', obj.items)
+        obj.items.forEach(item => {
+            let li = document.createElement("li");
+            li.className = 'list-item';
+            li.innerText = item;
+            ul.append(li)
 
-            // create, class and populate ol list items
-            let ol = document.createElement("ol");
-            ol.className = 'list-item';
-            ol.innerText = obj.details;
-            ul.append(ol)
-            div.append(ul)
-        }
+        })
 
+
+        // card.append(div)
+
+        card.addEventListener('click', function () {
+
+            modalEnergizer(obj)
+
+
+        })
     }
 
-    card.addEventListener('click', function () {
+    // card.addEventListener('click', function () {
 
-        modalEnergizer(obj)
+    //     modalEnergizer(obj)
 
 
-    })
+    // })
 
 }
 // this function refreshes the display of notes saved.
 function refreshNoteDisplay() {
-    // console.log("refreshNoteDisplay", 'that is all');
 
     // clear Note divs
     noteDisplayArea.textContent = '';
+
+    // clear list divs
+    listDisplayArea.textContent = '';
 
     oneArrayNote.forEach(notem => {
         buildCard(notem, 'note')
 
     })
+
+    console.log('oneArrayList', oneArrayList)
+    oneArrayList.forEach(listem => {
+        buildCard(listem, 'list')
+    })
+
+    dynamicDropdownList(oneArrayList)
 
 }
 
@@ -167,6 +244,14 @@ function saveAndPush(style, itemToPush) {
         itemToPush.id = setIDNum(oneArrayNote)
         itemToPush.title = noteTitle.value;
         itemToPush.details = noteDetails.value
+        console.log(itemToPush.title, itemToPush.details)
+        oneArrayNote.push(itemToPush)
+    }
+
+    if (style === 'list') {
+        itemToPush.id = setIDNum(oneArrayList)
+        itemToPush.title = listTitle.value;
+        itemToPush.details = listDetails.value
         console.log(itemToPush.title, itemToPush.details)
         oneArrayNote.push(itemToPush)
     }
@@ -184,8 +269,6 @@ function setIDNum(arrayToSetFrom) {
         listIdNum = idNum
     }
 }
-
-refreshNoteDisplay()
 
 // save elements to oneArrayNote when button clicked
 noteSaveButton.addEventListener('click', function () {
@@ -268,10 +351,10 @@ function modalEnergizer(item) {
     deleteDiv.addEventListener('click', function () {
         if (editSwitch === 'False') {
             deleteNote(item)
+
         }
-        if (editSwitch === 'True') {
-            refreshNoteDisplay()
-        }
+
+
     })
 
 
