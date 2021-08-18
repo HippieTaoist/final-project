@@ -1,5 +1,6 @@
 // set note / list selector to default at note
-let noteListSelector = 1;
+// 0 - List  || 1- note
+let noteListSelector = 0;
 //grab universal elements from
 let card = document.querySelectorAll('.card')
 let footer = document.querySelector('#footer')
@@ -14,6 +15,7 @@ let editObj
 // note section
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // grab elements
+let noteSection = document.getElementById('note-section')
 let noteTitle = document.getElementById("note-title");
 let noteDetails = document.getElementById("note-details");
 let noteSaveButton = document.getElementById("note-save-button");
@@ -23,7 +25,8 @@ let noteDisplayArea = document.getElementById("display-notes")
 // +++++++++++++++++++++++++++++++
 let listSection = document.getElementById("list-section");
 let listTitle = document.getElementById("list-title");
-let listSaveButton = document.getElementById("list-save")
+let listDetails = document.getElementById("list-details");
+let saveListButton = document.getElementById('save-list-button');
 let listDisplayArea = document.getElementById("display-lists")
 
 let makeNewList = {
@@ -36,35 +39,25 @@ console.log(makeNewList.title);
 
 // Save Array (Add keywqords later?)
 let oneArrayNote = [];
-let oneArrayList = [makeNewList];
+let oneArrayList = [makeNewList, makeNewList];
 
 // idNum
 let noteIdNum = 1;
 let listIdNum = 1;
 
-function selectList(optionValue) {
-    console.log('optionValue', optionValue);
+// modal development
+const modal = document.getElementById("modal-holder");
+const closeButton = document.querySelector(".close-button");
 
-}
 
-function dynamicDropdownList(oneArrayList) {
 
-    let select = document.getElementById('list-selector')
-    let initialOption = document.getElementById('option-new-list');
-    // console.log('initialOption', initialOption);
-    // select.id = 'list-selector';
-    // select.onchange = 'selectList()';
-    // listSection.append(select);
 
-    oneArrayList.forEach(list => {
-        let option = document.createElement('option');
-        console.log('list.title', list.title);
-        option.innerText = list.title
-        option.details = list.details
-        console.log('list', list)
-        select.append(option)
-    })
-}
+
+
+
+// +++++++++++++++++++++++++++++++
+// NOTE SECTION BELOW
+// +++++++++++++++++++++++++++++++
 
 // edit note in modal
 function editNote(note) {
@@ -140,9 +133,6 @@ function editNote(note) {
 
 }
 
-// refresh display area
-refreshNoteDisplay();
-
 // delete note from array
 function deleteNote(note) {
     console.log('deleteNote', note)
@@ -151,7 +141,41 @@ function deleteNote(note) {
     refreshNoteDisplay()
 }
 
+// +++++++++++++++++++++++++++++++
+// LIST SECTION BELOW
+// +++++++++++++++++++++++++++++++
+function selectList(optionValue) {
+    console.log('optionValue                 ', optionValue);
 
+
+}
+
+function dynamicDropdownList(oneArrayList) {
+
+    let select = document.getElementById('list-selector')
+    let initialOption = document.getElementById('option-new-list');
+    // console.log('initialOption', initialOption);
+    // select.id = 'list-selector';
+    // select.onchange = 'selectList()';
+    // listSection.append(select);
+
+    oneArrayList.forEach((list, index) => {
+        let option = document.createElement('option');
+        console.log('list.title', list.title);
+        console.log('option', option);
+        option.value = index
+        option.innerText = list.title
+        option.details = list.details
+        console.log('list', list)
+        select.append(option)
+    })
+}
+
+
+
+// +++++++++++++++++++++++++++++++
+// UNIVERSAL SECTION BELOW
+// +++++++++++++++++++++++++++++++
 
 // build cards to display in area
 function buildCard(obj, noteList) {
@@ -196,6 +220,10 @@ function buildCard(obj, noteList) {
             ul.append(li)
 
         })
+        let h1 = document.createElement("h1");
+        h1.className = 'headline'
+        h1.innerText = obj.title;
+        card.append(h1)
 
 
         // card.append(div)
@@ -238,7 +266,7 @@ function refreshNoteDisplay() {
     dynamicDropdownList(oneArrayList)
 
 }
-
+// refresh display area for notes and lists
 function saveAndPush(style, itemToPush) {
     if (style === 'note') {
         itemToPush.id = setIDNum(oneArrayNote)
@@ -252,11 +280,12 @@ function saveAndPush(style, itemToPush) {
         itemToPush.id = setIDNum(oneArrayList)
         itemToPush.title = listTitle.value;
         itemToPush.details = listDetails.value
+        itemToPush.items = [];
         console.log(itemToPush.title, itemToPush.details)
-        oneArrayNote.push(itemToPush)
+        oneArrayList.push(itemToPush)
     }
 }
-
+// setID numbers for the objects.
 function setIDNum(arrayToSetFrom) {
     let idNum = arrayToSetFrom.length + 1
 
@@ -269,24 +298,26 @@ function setIDNum(arrayToSetFrom) {
         listIdNum = idNum
     }
 }
+// seitch visible aspect of app
+function switcher() {
+    if (noteListSelector === 0) {
+        noteSection.style.display = "none"
+        listSection.style.display = "flex"
+        noteDisplayArea.style.display = "none"
+        listDisplayArea.style.display = "flex"
+    }
+    if (noteListSelector === 1) {
+        noteSection.style.display = "flex"
+        listSection.style.display = "none"
+        noteDisplayArea.style.display = "flex"
+        listDisplayArea.style.display = "none"
+    }
 
-// save elements to oneArrayNote when button clicked
-noteSaveButton.addEventListener('click', function () {
-    let note = []
-    // console.log('noteSaveButton clicked')
-    saveAndPush('note', note)
-    // console.log(oneArrayNote)
-    localStorage.setItem('oneArrayNote', JSON.stringify(oneArrayNote))
-    // console.log(JSON.parse(localStorage.getItem('oneArrayNote')));
-    refreshNoteDisplay();
-    console.log('');
-    console.log('');
 
-})
+}
 
-// modal development
-const modal = document.getElementById("modal-holder");
-const closeButton = document.querySelector(".close-button");
+
+
 
 // bring modal to the front
 function modalEnergizer(item) {
@@ -362,28 +393,57 @@ function modalEnergizer(item) {
 
     toggleModal()
 }
-
-
-
+//  deenergize modal and strip divs
 function deEnergizeModal() {
     let tempModalDiv = document.getElementById('modal-div');
     tempModalDiv.remove()
     // modal.innerHTML = '<div class = "modal-content"><span class="close-button">×</span></div>'
     toggleModal()
-
 }
-
+// close modal
 function windowOnClick(event) {
     if (event.target === modal) {
         toggleModal();
     }
 }
-
+//  close modal
 function toggleModal() {
     modal.classList.toggle('show-modal')
 }
 
+
+// +++++++++++++++++++++++++++++++
+// ACTION!!
+
+// save elements to oneArrayNote when button clicked
+noteSaveButton.addEventListener('click', function () {
+    let note = []
+    // console.log('noteSaveButton clicked')
+    saveAndPush('note', note)
+    // console.log(oneArrayNote)
+    localStorage.setItem('oneArrayNote', JSON.stringify(oneArrayNote))
+    // console.log(JSON.parse(localStorage.getItem('oneArrayNote')));
+    refreshNoteDisplay();
+    console.log('');
+    console.log('');
+
+})
+// save and add item to oneArrayList
+saveListButton.addEventListener('click', function () {
+    let list = [];
+    saveAndPush("list", list);
+    refreshNoteDisplay();
+})
+// activate deenergize modal when close clicked
 closeButton.addEventListener('click', deEnergizeModal);
+
+
+// refresh display area
+refreshNoteDisplay();
+// activate switcher
+switcher();
+
+
 
 // window.addEventListener('click', toggleModal);
 
