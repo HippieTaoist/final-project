@@ -150,13 +150,16 @@ function editNote(note) {
                 let itemInputs = document.querySelectorAll('.list-item-input')
                 editObj.items = []
                 itemInputs.forEach(item => {
-                    editObj.items.push(item.value)
+                    if (item.value !== "") {
+                        console.log('itemInputs', item.value)
+                        editObj.items.push(item.value)
+                    }
                 })
                 console.log('editObj', editObj.items, 'noteid', [note.id - 1])
                 oneArrayList.splice([note.id - 1], 1)
                 oneArrayList.splice([note.id - 1], 0, editObj)
                 console.log('oneArrayList', oneArrayList)
-                oneArrayList.push(editObj)
+                // oneArrayList.push(editObj)
             }
             modalDiv.remove(divEditText);
             h1EditText.remove()
@@ -526,7 +529,9 @@ saveListButton.addEventListener('click', function () {
     console.log(listItems)
     list.items = []
     listItems.forEach(item => {
+
         list.items.push(item.innerText)
+
     })
 
 
@@ -546,7 +551,9 @@ listInputButton.addEventListener('click', function () {
     let li = document.createElement('li')
     li.className = 'clicklist'
     li.innerText = listItemInput.value
+
     listItemsUL.append(li)
+
 
 })
 
