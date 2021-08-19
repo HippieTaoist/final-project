@@ -228,6 +228,7 @@ function dynamicDropdownList() {
     // listSection.append(select);
     select.prepend(initialOption)
 
+    // build dropdownlist
     oneArrayList.forEach((list, index) => {
         let option = document.createElement('option');
         // console.log('list.title', list.title);
@@ -350,7 +351,9 @@ function saveAndPush(style, itemToPush) {
         itemToPush.id = setIDNum(oneArrayList)
         itemToPush.title = listTitle.value;
         itemToPush.details = listDetails.value
-        itemToPush.items = [];
+        if (itemToPush.items.length === 0) {
+            itemToPush.items = [];
+        }
         itemToPush.style = 'list'
         // console.log(itemToPush.title, itemToPush.details)
         oneArrayList.push(itemToPush)
@@ -519,6 +522,14 @@ noteSaveButton.addEventListener('click', function () {
 // save and add item to oneArrayList
 saveListButton.addEventListener('click', function () {
     let list = [];
+    let listItems = document.querySelectorAll('li.clicklist');
+    console.log(listItems)
+    list.items = []
+    listItems.forEach(item => {
+        list.items.push(item.innerText)
+    })
+
+
     saveAndPush("list", list);
     dynamicDropdownList()
     refreshNoteDisplay();
@@ -533,8 +544,10 @@ select.addEventListener('click',
 
 listInputButton.addEventListener('click', function () {
     let li = document.createElement('li')
+    li.className = 'clicklist'
     li.innerText = listItemInput.value
     listItemsUL.append(li)
+
 })
 
 
