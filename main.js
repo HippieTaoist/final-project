@@ -2,9 +2,11 @@
 // 0 - List  || 1- note
 let noteListSelector = 0;
 //grab universal elements from
-let card = document.querySelectorAll('.card')
-let footer = document.querySelector('#footer')
 
+let quoteAPIDiv = document.getElementById('quote-API-section');
+let card = document.querySelectorAll('.card')
+let switcherButton = document.getElementById('switcher');
+let footer = document.querySelector('#footer')
 let editSwitch = 'True'
 let editObj
 
@@ -27,19 +29,26 @@ let listSection = document.getElementById("list-section");
 let listTitle = document.getElementById("list-title");
 let listDetails = document.getElementById("list-details");
 let saveListButton = document.getElementById('save-list-button');
-let listDisplayArea = document.getElementById("display-lists")
+let listDisplayArea = document.getElementById("display-lists");
+let select = document.getElementById('list-selector')
+let listItemsUL = document.getElementById('list-items-ul');
+let listItemInput = document.getElementById('list-item-input');
+let listInputButton = document.getElementById('save-list-item')
 
+// setup test array
 let makeNewList = {
+    id: 1,
     title: 'New List For You',
     details: 'enter your new list item here',
     items: ['milk', 'cheese', 'butter']
 }
 
-console.log(makeNewList.title);
-
 // Save Array (Add keywqords later?)
 let oneArrayNote = [];
+// oneArrayNote = getFromLocalStorage('oneArrayNote')
+console.log(oneArrayNote)
 let oneArrayList = [makeNewList, makeNewList];
+let listItems = []
 
 // idNum
 let noteIdNum = 1;
@@ -51,10 +60,6 @@ const closeButton = document.querySelector(".close-button");
 
 
 
-
-
-
-
 // +++++++++++++++++++++++++++++++
 // NOTE SECTION BELOW
 // +++++++++++++++++++++++++++++++
@@ -62,63 +67,97 @@ const closeButton = document.querySelector(".close-button");
 // edit note in modal
 function editNote(note) {
     editSwitch = 'True'
-    // associate internal text for when person edit note.
-    editObj = oneArrayNote[note.id - 1]
-    console.log(editObj)
+    if (noteListSelector === 0) {
+        // associate internal text for when person edit note.
+        editObj = oneArrayList[note.id - 1]
+        console.log('editNote-editObj-oneArrayList', editObj)
+    }
+
+
+    if (noteListSelector === 1) {
+        // associate internal text for when person edit note.
+        editObj = oneArrayNote[note.id - 1]
+        console.log('editNote-editObj-oneNoteArray', editObj)
+    }
+
     let editStartTitleText = editObj.title
     let editStartDetailsText = editObj.details
-    console.log('editStartText', editStartTitleText, editStartDetailsText, editObj)
-
-    // let modalDiv = document.getElementById('modal-div')
-    // console.log('')
-
+    let editStartItems = editObj.items
+    console.log('editStart', editStartItems)
     let saveButton = document.getElementById('edit-div');
     let cancelButton = document.getElementById('delete-div');
-    saveButton.innerText = 'SAVE';
-    saveButton.className = 'save-confirm-buttons'
-
-
-    cancelButton.innerText = 'CANCEL'
-    cancelButton.className = 'save-confirm-buttons'
 
     let modalDiv = document.getElementById('modal-div')
     let h1 = document.getElementById("h1-modal")
     let divContent = document.getElementById('divcontent-modal');
     let h1EditText = document.createElement('input');
     let divEditText = document.createElement('textarea');
-    divEditText.className = 'edited-details'
 
-    h1EditText.value = editStartTitleText;
-    console.log('h1EditText', h1EditText.value)
+    saveButton.innerText = 'SAVE';
+    saveButton.className = 'save-confirm-buttons'
 
-    divEditText.innerText = editStartDetailsText;
-
-    console.log('divEditText', divEditText.innerText)
+    cancelButton.innerText = 'CANCEL'
+    cancelButton.className = 'save-confirm-buttons'
 
     h1.style.visibility = 'hidden'
-    // h1.innerHTML = `<input value='${editStartTitleText}'/>`
     divContent.style.visibility = 'hidden';
-    // divContent.innerHTML = `<textarea id='edited-details'>${editStartDetailsText}</textarea>`;
+
+    divEditText.id = 'edited-details'
+    let editedDetails = document.getElementById('edited-details')
+    console.log('edited-details', editedDetails)
+    h1EditText.value = editStartTitleText;
+
     modalDiv.style.display = 'flex';
     modalDiv.style.flexDirection = 'column';
-    modalDiv.prepend(divEditText)
-
-    modalDiv.prepend(h1EditText)
 
 
-    let editedDetails = document.querySelector('.edited-details')
-    console.log('editedDetails', editedDetails)
+
+    divEditText.innerText = editStartDetailsText;
+    console.log('editStartDetailsText', editStartDetailsText)
+    console.log('editNote-divEditText', divEditText.innerText)
+    if (noteListSelector === 0) {
 
 
+        editStartItems.forEach(item => {
+            let listItemInput = document.createElement('input')
+            listItemInput.className = 'list-item-input'
+            listItemInput.value = item;
+            modalDiv.prepend(listItemInput)
+        })
+    }
+
+
+
+
+
+
+    console.log('editStartDetailsText', editStartDetailsText)
+    console.log('editNote-divEditText', divEditText.innerText)
+    let randomText = divEditText.innerText
+    console.log('randomText', randomText)
 
     saveButton.addEventListener('click', function () {
         if (editSwitch === 'True') {
-
             editObj.title = h1EditText.value
-            console.log('editedDetails', editedDetails.value)
-            editObj.details = editedDetails.value;
-            console.log('editOBJ', editObj)
-            oneArrayNote[note.id - 1] = editObj
+            console.log('editNote-divEditText', divEditText.innerText)
+
+            editObj.details = randomText;
+            console.log('editNote-saveButton-editOBJ', editObj)
+            if (noteListSelector === 1) {
+                oneArrayNote[note.id - 1] = editObj
+            }
+            if (noteListSelector === 0) {
+                let itemInputs = document.querySelectorAll('.list-item-input')
+                editObj.items = []
+                itemInputs.forEach(item => {
+                    editObj.items.push(item.value)
+                })
+                console.log('editObj', editObj.items, 'noteid', [note.id - 1])
+                oneArrayList.splice([note.id - 1], 1)
+                oneArrayList.splice([note.id - 1], 0, editObj)
+                console.log('oneArrayList', oneArrayList)
+                oneArrayList.push(editObj)
+            }
             modalDiv.remove(divEditText);
             h1EditText.remove()
             refreshNoteDisplay()
@@ -131,42 +170,73 @@ function editNote(note) {
         }
     })
 
+    modalDiv.prepend(divEditText)
+
+    modalDiv.prepend(h1EditText)
+
 }
 
 // delete note from array
 function deleteNote(note) {
     console.log('deleteNote', note)
     oneArrayNote.splice([note.id - 1], 1)
-    deEnergizeModal()
+    localStorage.removeItem('oneArrayNote', oneArrayNote[note.id - 1]);
+    deEnergizeModal();
     refreshNoteDisplay()
 }
+
+
+
+
+
+
+
+
+
 
 // +++++++++++++++++++++++++++++++
 // LIST SECTION BELOW
 // +++++++++++++++++++++++++++++++
 function selectList(optionValue) {
-    console.log('optionValue                 ', optionValue);
+    listItemsUL.innerHTML = '';
+    let selectedList = oneArrayList[optionValue]
+    // console.log(selectedList)
 
+    listTitle.value = selectedList.title;
+    listDetails.innerText = selectedList.details
+    listItems = selectedList.items;
+    console.log('listItems', listItems)
+    listItems.forEach(listItem => {
+        console.log('selectList', listItem)
+        let li = document.createElement('li');
+        listItemsUL.append(li);
+    })
+
+    refreshNoteDisplay()
 
 }
 
-function dynamicDropdownList(oneArrayList) {
+function dynamicDropdownList() {
 
-    let select = document.getElementById('list-selector')
-    let initialOption = document.getElementById('option-new-list');
+
+    let initialOption = document.createElement('option');
+    initialOption.className = 'option-new-list'
+    initialOption.value = 0;
+    initialOption.innerText = 'Setup New List Below';
     // console.log('initialOption', initialOption);
-    // select.id = 'list-selector';
-    // select.onchange = 'selectList()';
+    select.innerHTML = '' // select.onchange = 'selectList()';
     // listSection.append(select);
+    select.prepend(initialOption)
 
     oneArrayList.forEach((list, index) => {
         let option = document.createElement('option');
-        console.log('list.title', list.title);
-        console.log('option', option);
-        option.value = index
+        // console.log('list.title', list.title);
+        // console.log('option', option);
+        option.value = index;
         option.innerText = list.title
         option.details = list.details
-        console.log('list', list)
+        option.items = list.items
+        // console.log('list', list)
         select.append(option)
     })
 }
@@ -258,12 +328,10 @@ function refreshNoteDisplay() {
 
     })
 
-    console.log('oneArrayList', oneArrayList)
+    // console.log('oneArrayList', oneArrayList)
     oneArrayList.forEach(listem => {
         buildCard(listem, 'list')
     })
-
-    dynamicDropdownList(oneArrayList)
 
 }
 // refresh display area for notes and lists
@@ -272,8 +340,10 @@ function saveAndPush(style, itemToPush) {
         itemToPush.id = setIDNum(oneArrayNote)
         itemToPush.title = noteTitle.value;
         itemToPush.details = noteDetails.value
-        console.log(itemToPush.title, itemToPush.details)
+        itemToPush.style = 'note'
+        // console.log(itemToPush.title, itemToPush.details)
         oneArrayNote.push(itemToPush)
+        return itemToPush;
     }
 
     if (style === 'list') {
@@ -281,8 +351,11 @@ function saveAndPush(style, itemToPush) {
         itemToPush.title = listTitle.value;
         itemToPush.details = listDetails.value
         itemToPush.items = [];
-        console.log(itemToPush.title, itemToPush.details)
+        itemToPush.style = 'list'
+        // console.log(itemToPush.title, itemToPush.details)
         oneArrayList.push(itemToPush)
+        // console.log("oneArrayList", oneArrayList)
+
     }
 }
 // setID numbers for the objects.
@@ -296,21 +369,31 @@ function setIDNum(arrayToSetFrom) {
     }
     if (arrayToSetFrom === oneArrayList) {
         listIdNum = idNum
+        return listIdNum;
     }
 }
 // seitch visible aspect of app
 function switcher() {
-    if (noteListSelector === 0) {
-        noteSection.style.display = "none"
-        listSection.style.display = "flex"
-        noteDisplayArea.style.display = "none"
-        listDisplayArea.style.display = "flex"
-    }
-    if (noteListSelector === 1) {
-        noteSection.style.display = "flex"
-        listSection.style.display = "none"
-        noteDisplayArea.style.display = "flex"
-        listDisplayArea.style.display = "none"
+    // console.log('switch hit')
+
+    if (noteSection.style.display === "flex") {
+        noteSection.style.display = "none";
+        listSection.style.display = "flex";
+        noteDisplayArea.style.display = "none";
+        listDisplayArea.style.display = "flex";
+        refreshNoteDisplay()
+        noteListSelector = 0;
+        switcherButton.innerText = 'Click For Notes'
+        switcherButton.style.backgroundColor = 'purple';
+    } else {
+        noteSection.style.display = "flex";
+        listSection.style.display = "none";
+        noteDisplayArea.style.display = "flex";
+        listDisplayArea.style.display = "none";
+        refreshNoteDisplay()
+        noteListSelector = 1;
+        switcherButton.innerText = 'Click For Lists'
+        switcherButton.style.backgroundColor = 'green';
     }
 
 
@@ -318,6 +401,9 @@ function switcher() {
 
 
 
+// +++++++++++++++++++++++++++++++
+// MODAL SECTION BELOW
+// +++++++++++++++++++++++++++++++
 
 // bring modal to the front
 function modalEnergizer(item) {
@@ -369,14 +455,15 @@ function modalEnergizer(item) {
     editDeleteDiv.append(deleteDiv);
     modalDiv.append(editDeleteDiv)
 
+    console.log('editNoteArrayClicked', item)
+
     // add event listeners to buttons
     // call apporpriate fuction per listener
-    // Send item for editing
+    // Send item for editing - secondary half of function
     editDiv.addEventListener('click', function () {
         if (editSwitch === 'False') {
             editNote(item)
         }
-
     })
 
     deleteDiv.addEventListener('click', function () {
@@ -393,6 +480,7 @@ function modalEnergizer(item) {
 
     toggleModal()
 }
+
 //  deenergize modal and strip divs
 function deEnergizeModal() {
     let tempModalDiv = document.getElementById('modal-div');
@@ -414,15 +502,15 @@ function toggleModal() {
 
 // +++++++++++++++++++++++++++++++
 // ACTION!!
-
+// noteSection.style.display === "none"
 // save elements to oneArrayNote when button clicked
 noteSaveButton.addEventListener('click', function () {
-    let note = []
+    let note = {}
     // console.log('noteSaveButton clicked')
-    saveAndPush('note', note)
-    // console.log(oneArrayNote)
-    localStorage.setItem('oneArrayNote', JSON.stringify(oneArrayNote))
-    // console.log(JSON.parse(localStorage.getItem('oneArrayNote')));
+    note = saveAndPush('note', note)
+    console.log("oneArrayNote", oneArrayNote)
+    localStorage.setItem('oneArrayNote', JSON.stringify(oneArrayNote));
+
     refreshNoteDisplay();
     console.log('');
     console.log('');
@@ -432,19 +520,72 @@ noteSaveButton.addEventListener('click', function () {
 saveListButton.addEventListener('click', function () {
     let list = [];
     saveAndPush("list", list);
+    dynamicDropdownList()
     refreshNoteDisplay();
 })
 // activate deenergize modal when close clicked
 closeButton.addEventListener('click', deEnergizeModal);
+// watch for the switch
+switcherButton.addEventListener('click', switcher);
+// popluatedropdownlist
+select.addEventListener('click',
+    dynamicDropdownList())
+
+listInputButton.addEventListener('click', function () {
+    let li = document.createElement('li')
+    li.innerText = listItemInput.value
+    listItemsUL.append(li)
+})
 
 
 // refresh display area
 refreshNoteDisplay();
-// activate switcher
+
 switcher();
 
 
 
 // window.addEventListener('click', toggleModal);
 
+
+function rando(num) {
+    return Math.floor(Math.random() * num)
+}
+
+//quoteAPI
+async function quoteAPI() {
+    let rawData = await fetch('https://api.quotable.io/quotes')
+    let data = await rawData.json()
+    console.log(data)
+    let randoPage = rando(data.totalPages)
+
+    let rawData2 = await fetch(`https://api.quotable.io/quotes?page=${randoPage}`)
+    let data2 = await (rawData2.json())
+    console.log(data2)
+
+
+    let randoQuote = rando(data.results.length)
+    console.log(randoQuote)
+
+
+    let quote = data2.results[randoQuote].content
+    console.log('quoteArray', quote)
+
+    quoteAPIDiv.innerText = quote
+
+}
+quoteAPI();
+
+
+function getFromLocalStorage(arrayName) {
+    // editObj
+    let tempObj = localStorage.getItem(arrayName)
+    console.log('JSON Parse', JSON.parse(tempObj));
+    return JSON.parse(tempObj);
+
+}
+
+function removeFromLocalStorage() {
+
+}
 // save elements to oneArrayList when button clicked
