@@ -1,17 +1,49 @@
 body {
     display: flex;
+    width: 100%;
     justify-content: center;
     flex-direction: column;
 
+
 }
 
+
 section#header {
-    background-color: green;
+    /* background-color: green; */
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    align-items: space-around;
+    align-items: space-between;
+}
+
+div#title-section {
+    background-color: blue;
+    color: yellow;
+    margin: auto;
+    width: fit-content;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+div#quote-API-section {
+    border-radius: 10px;
+    border: black;
+    background-color: grey;
+    width: fit-content;
+    margin: auto;
+    margin-top: 1%;
+    padding: 10px;
+    box-shadow: inset 0 0 10px black;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+button#switcher {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    font-size: large;
 }
 
 section#note-list-selector {
@@ -25,32 +57,67 @@ section#note-list-selector {
 }
 
 div#note-section {
-    display: flex;
+    /* display: flex; */
     justify-content: center;
     margin: auto;
     background-color: purple;
     /* align-items: space-around; */
     flex-direction: column;
     padding: 5px;
-    width: 20%;
+    width: 50%;
     height: fit-content;
     padding: 10px;
     border-radius: 10px;
 }
 
 div#list-section {
-    display: flex;
+    /* display: flex; */
     justify-content: center;
     margin: auto;
     background-color: green;
-    padding 5px;
+    padding: 5px;
     align-items: center;
-    flex-direction: column;
+    flex-direction: row;
     padding: 10px;
-    width: 20%;
+    width: 50%;
     height: fit-content;
     border-radius: 10px
 }
+
+#list-sect-1 {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+#list-items-ul {}
+
+#list-items-local {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: baseline;
+    border: #c00 5px solid;
+    width: 50%
+}
+
+button#save-list-item {
+    height: 100%;
+    width: 20%;
+    background-color: green;
+}
+
+div#save-list-item-div {
+    display: flex;
+
+}
+
+input#list-item-input {
+    width: 80%;
+
+}
+
 
 input#note-details {
     width: 100%;
@@ -144,6 +211,9 @@ section#footer {
 
 }
 
+.list {
+    overflow: hidden;
+}
 
 .card {
 
@@ -157,6 +227,7 @@ section#footer {
     margin: 20px;
     /* overflow: hidden; */
     resize: block;
+
     background-color: transparent;
 }
 
