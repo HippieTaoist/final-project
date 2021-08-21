@@ -42,12 +42,59 @@ let makeNewList = {
     details: 'enter your new list item here',
     items: ['milk', 'cheese', 'butter']
 }
-
+let oneArrayNote
 // Save Array (Add keywqords later?)
-let oneArrayNote = [];
+if (getFromLocalStorage('oneArrayNote') === null) {
+    oneArrayNote = []
+    console.log('its null')
+} else {
+    oneArrayNote = getFromLocalStorage('oneArrayNote')
+}
+
+oneArrayNote.forEach(obj => {
+    console.log('obj.id', obj.id)
+    if (obj.length === 0) {
+
+        deleteNote(obj)
+    }
+})
+
 // oneArrayNote = getFromLocalStorage('oneArrayNote')
 console.log(oneArrayNote)
-let oneArrayList = [makeNewList, makeNewList];
+
+let oneArrayListTemp = getFromLocalStorage('oneArrayList')
+
+console.log('oneArraList', oneArrayListTemp)
+
+if (oneArrayListTemp === null) {
+    oneArrayList = [];
+} else {
+    oneArrayList = oneArrayListTemp.filter(arrayFilter)
+}
+
+function arrayFilter(obj) {
+    // console.log('arrayFilter', obj.id)
+    if (obj.id !== undefined)
+        return obj
+}
+// console.log('oneArraList', oneArrayList)
+// Save Array (Add keywqords later?)
+// if (getFromLocalStorage('oneArrayList') === null) {
+//     oneArrayList = []
+//     console.log('its null')
+// } else {
+//     oneArrayList = getFromLocalStorage('oneArrayList')
+// }
+
+// oneArrayList.forEach(obj => {
+//     console.log('obj.id', oneArrayList.indexOf(obj), obj.id)
+//     if (obj.id === undefined) {
+//         oneArrayList.splice(oneArrayList.indexOf(obj), 1)
+//         deleteList(obj)
+//     }
+// })
+
+
 let listItems = []
 
 // idNum
@@ -68,6 +115,7 @@ const closeButton = document.querySelector(".close-button");
 function editNote(note) {
     editSwitch = 'True'
     if (noteListSelector === 0) {
+        console.log(note.id)
         // associate internal text for when person edit note.
         editObj = oneArrayList[note.id - 1]
         console.log('editNote-editObj-oneArrayList', editObj)
@@ -83,7 +131,7 @@ function editNote(note) {
     let editStartTitleText = editObj.title
     let editStartDetailsText = editObj.details
     let editStartItems = editObj.items
-    console.log('editStart', editStartItems)
+    // console.log('editStart', editStartItems)
     let saveButton = document.getElementById('edit-div');
     let cancelButton = document.getElementById('delete-div');
 
@@ -104,8 +152,15 @@ function editNote(note) {
 
     divEditText.id = 'edited-details'
     let editedDetails = document.getElementById('edited-details')
-    console.log('edited-details', editedDetails)
+    // console.log('edited-details', editedDetails)
     h1EditText.value = editStartTitleText;
+
+    // console.log('edited-details', editedDetails)
+
+
+
+    // let additionalListItems = collectListItems(makeMoreListItems)
+    // console.log('additionalListItems', additionalListItems)
 
     modalDiv.style.display = 'flex';
     modalDiv.style.flexDirection = 'column';
@@ -113,10 +168,16 @@ function editNote(note) {
 
 
     divEditText.innerText = editStartDetailsText;
-    console.log('editStartDetailsText', editStartDetailsText)
-    console.log('editNote-divEditText', divEditText.innerText)
+    // console.log('editStartDetailsText', editStartDetailsText)
+    // console.log('editNote-divEditText', divEditText.innerText)
     if (noteListSelector === 0) {
 
+        let makeMoreListItem = document.createElement('textarea')
+        makeMoreListItem.id = 'item-maker'
+
+        let makeMoreListItemArea = document.getElementById('item-maker')
+
+        divEditText.append(makeMoreListItemArea)
 
         editStartItems.forEach(item => {
             let listItemInput = document.createElement('input')
@@ -131,8 +192,8 @@ function editNote(note) {
 
 
 
-    console.log('editStartDetailsText', editStartDetailsText)
-    console.log('editNote-divEditText', divEditText.innerText)
+    // console.log('editStartDetailsText', editStartDetailsText)
+    // console.log('editNote-divEditText', divEditText.innerText)
     let randomText = divEditText.innerText
     console.log('randomText', randomText)
 
@@ -143,10 +204,10 @@ function editNote(note) {
 
             editObj.details = randomText;
             console.log('editNote-saveButton-editOBJ', editObj)
-            if (noteListSelector === 1) {
+            if (noteListSelector === 0) {
                 oneArrayNote[note.id - 1] = editObj
             }
-            if (noteListSelector === 0) {
+            if (noteListSelector === 1) {
                 let itemInputs = document.querySelectorAll('.list-item-input')
                 editObj.items = []
                 itemInputs.forEach(item => {
@@ -179,17 +240,28 @@ function editNote(note) {
 
 }
 
+function collectListItems(textArea) {
+    return textArea.split('\n')
+}
+
 // delete note from array
 function deleteNote(note) {
-    console.log('deleteNote', note)
+    console.log('deleteNote', note, [note.id - 1])
     oneArrayNote.splice([note.id - 1], 1)
+    console.log('deleteNote-onearray', oneArrayNote[note.id - 1])
     localStorage.removeItem('oneArrayNote', oneArrayNote[note.id - 1]);
     deEnergizeModal();
     refreshNoteDisplay()
 }
 
 
-
+function deleteList(list) {
+    console.log('deleteList', list)
+    oneArrayList.splice([list.id - 1], 1)
+    localStorage.removeItem('oneArrayList', oneArrayList[list.id - 1]);
+    deEnergizeModal();
+    refreshNoteDisplay()
+}
 
 
 
@@ -254,7 +326,7 @@ function dynamicDropdownList() {
 // build cards to display in area
 function buildCard(obj, noteList) {
 
-    console.log('notelist', noteList)
+
     if (noteList === 'note') {
         let card = document.createElement("div");
         card.className = 'card fade-in'
@@ -284,14 +356,17 @@ function buildCard(obj, noteList) {
         ul.className = 'list';
         card.append(ul)
         // create, class and populate ol list items
-        console.log('obj', obj)
+
         // setup reference for index
-        console.log('items', obj.items)
+
         obj.items.forEach(item => {
-            let li = document.createElement("li");
-            li.className = 'list-item';
-            li.innerText = item;
-            ul.append(li)
+            if (item.length > 0) {
+                let li = document.createElement("li");
+                li.className = 'list-item';
+                li.innerText = item;
+                ul.append(li)
+            }
+
 
         })
         let h1 = document.createElement("h1");
@@ -360,6 +435,7 @@ function saveAndPush(style, itemToPush) {
         itemToPush.style = 'list'
         // console.log(itemToPush.title, itemToPush.details)
         oneArrayList.push(itemToPush)
+        saveToLocalStorage(oneArrayList)
         // console.log("oneArrayList", oneArrayList)
 
     }
@@ -461,7 +537,7 @@ function modalEnergizer(item) {
     editDeleteDiv.append(deleteDiv);
     modalDiv.append(editDeleteDiv)
 
-    console.log('editNoteArrayClicked', item)
+    console.log('editNote Clicked', item)
 
     // add event listeners to buttons
     // call apporpriate fuction per listener
@@ -474,7 +550,12 @@ function modalEnergizer(item) {
 
     deleteDiv.addEventListener('click', function () {
         if (editSwitch === 'False') {
-            deleteNote(item)
+            if (noteListSelector === 1) {
+                deleteNote(item)
+            }
+            if (noteListSelector === 0) {
+                deleteList(item)
+            }
 
         }
 
@@ -515,7 +596,7 @@ noteSaveButton.addEventListener('click', function () {
     // console.log('noteSaveButton clicked')
     note = saveAndPush('note', note)
     console.log("oneArrayNote", oneArrayNote)
-    localStorage.setItem('oneArrayNote', JSON.stringify(oneArrayNote));
+    saveToLocalStorage(oneArrayNote);
 
     refreshNoteDisplay();
     console.log('');
@@ -524,7 +605,7 @@ noteSaveButton.addEventListener('click', function () {
 })
 // save and add item to oneArrayList
 saveListButton.addEventListener('click', function () {
-    let list = [];
+    let list = {};
     let listItems = document.querySelectorAll('li.clicklist');
     console.log(listItems)
     list.items = []
@@ -533,6 +614,7 @@ saveListButton.addEventListener('click', function () {
         list.items.push(item.innerText)
 
     })
+
 
 
     saveAndPush("list", list);
@@ -568,33 +650,17 @@ switcher();
 // window.addEventListener('click', toggleModal);
 
 
-function rando(num) {
-    return Math.floor(Math.random() * num)
-}
-
-//quoteAPI
-async function quoteAPI() {
-    let rawData = await fetch('https://api.quotable.io/quotes')
-    let data = await rawData.json()
-    console.log(data)
-    let randoPage = rando(data.totalPages)
-
-    let rawData2 = await fetch(`https://api.quotable.io/quotes?page=${randoPage}`)
-    let data2 = await (rawData2.json())
-    console.log(data2)
 
 
-    let randoQuote = rando(data.results.length)
-    console.log(randoQuote)
-
-
-    let quote = data2.results[randoQuote].content
-    console.log('quoteArray', quote)
-
-    quoteAPIDiv.innerText = quote
+function saveToLocalStorage(arrayToSave) {
+    if (arrayToSave === oneArrayNote) {
+        localStorage.setItem('oneArrayNote', JSON.stringify(arrayToSave));
+    }
+    if (arrayToSave === oneArrayList) {
+        localStorage.setItem('oneArrayList', JSON.stringify(arrayToSave));
+    }
 
 }
-quoteAPI();
 
 
 function getFromLocalStorage(arrayName) {
@@ -605,7 +671,13 @@ function getFromLocalStorage(arrayName) {
 
 }
 
-function removeFromLocalStorage() {
+function removeFromLocalStorage(arrayToRemove, index) {
+    if (arrayToRemove === oneArrayNote) {
+        localStorage.removeItem('oneArrayNote', );
+    }
+    if (arrayToRemove === oneArrayList) {
+        localStorage.setItem('oneArrayList', JSON.stringify(arrayToSave));
+    }
 
 }
 // save elements to oneArrayList when button clicked
