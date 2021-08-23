@@ -1,46 +1,25 @@
 # Final Project
 
-In this project, you'll build a web application that does anything you want! 
+In this project, I have created a flashcard styled note/todo managment app website.
 
-It must meet the project requirements below, but beyond that, feel free to use your creativity to decide on what your app will do.
+#In This App
+- ability to create notes
+-ablity to delete notes
+- ablity to edit note
 
-## Requirements
+- ablity to create list
+- ablity to edit lists
+- ablity to delete list
 
-* **Your app has at least three distinct "features"**
-  * If you are building a travel planning application, one feature could be allowing users to create a new trip
-* Your project has at least ten commits in git
-* Your app is mobile responsive
-* Your project contains a `README.md` file that explains what your project is and how to use it
-* Your project is hosted on GitHub pages
-* Your code is clean
-  * Proper indentation
-  * No unnecessary repetition
-  * Variables as camelCase
+- random api quotes
 
-## Project ideas
+-local storage
 
-* Travel planner
-* Budget manager
-* Resume builder
-* Shift scheduling app
-* Chat bot
-* Music making app
-* Games
-  * PacMan
-  * Chess
-* Do something with an external API: https://github.com/public-apis/public-apis
-  * Slack / discord bot
-  * Recreate Reddit
-  * Pokedex
+intereaction is through the cards themselves after initial creation of note or list card, your card will be presented below the initial entry point.
 
-And so many more possibilities!
+simply enter note / list in esignated area and save or delete at your leisure.
 
-## Recommendations
 
-* Start out by creating your project's foundation in HTML.
-* Frequently make commmits in git to save your progress.
-* Build one piece of Javascript functionality at a time, testing each change you make with `console.log`. 
-* Keep your code meticulously organized as you go. 
-* Use proper indentation, whitespace, and comments. 
-* Try to write a function for each separate piece of functionality that exists in your code. This will make your code "modular" and easier to build off of.
-* If you find yourself repeating code, think about how you could use either a loop or a new function to eliminate the repitition.
+items to add:
+move to reproritize
+countdown aspect with live countdown
