@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Scribble-It!</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="styles copy.css" rel="stylesheet">
+</head>
+
+<body id='le-body'>
+    <section id="header">
+        <div id="title-section">Scribble-It!</div>
+        <div id="quote-API-section">Quote API</div>
+
+    </section>
+
+    <section id="note-or-list-section">
+        <div id="note-or-list-container">
+            <button type="button" id="switcher">placeho0lder</button>
+        </div>
+
+    </section>
+    <section id="note-list-selector">
+        <div id="note-section">
+
+            <input type="text" name="note-title" id="note-title"" value=" Your Note title">
+
+            <textarea id='note-details' name="note-details">Your note-body here</textarea>
+            </textarea>
+            <!-- <div id='button-area'></div> -->
+            <button id="note-save-button">Save Note</button>
+        </div>
+
+
+
+
+        <div id="list-section">
+            <div id="list-sect-1">
+                <select id="list-selector" onchange=selectList(value)>
+                    <option name='new-list' value='new-list' id='option-new-list' selected>Create New List...</option>
+                </select>
+
+
+                <input type="text" name="list-title" id="list-title" value="Your List Title">
+                <textarea id='list-details' name="list-details"></textarea>
+
+
+                <button id="save-list-button">Save List</button>
+
+            </div>
+            <div id="list-items-local">
+                <div id="save-list-item-div">
+                    <input type="text" name="list-item-input" id="list-item-input" value=" List Items Here">
+                    <button id='save-list-item'>S</button>
+                </div>
+                <div>
+                    <ul id="list-items-ul"></ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="display-cards-container">
+        <button id='object-burner'>Burn It To The Ground Pookie!!!</button>
+        <div id="display-lists">
+        </div>
+        <div id="display-notes">
+        </div>
+    </section>
+    <section id="footer">
+        <div class="modal" id="modal-holder">
+            <div class="modal-content">
+                <span class="close-button">×</span>
+            </div>
+        </div>
+    </section>
+
+
+    <script src="quoteAPI.js"></script>
+    <script src="main2.js"></script>
+    <!-- MAIN@ IS JUST FOR TESTING MAIN.JS IS TRUE FILE -->
+</body>
+
+</html>

@@ -1,6 +1,7 @@
 // set note / list selector to default at note
 // 0 - List  || 1- note
 let noteListSelector = 0;
+let splash = 0;
 //grab universal elements from
 
 let quoteAPIDiv = document.getElementById('quote-API-section');
@@ -35,6 +36,8 @@ let listItemsUL = document.getElementById('list-items-ul');
 let listItemInput = document.getElementById('list-item-input');
 let listInputButton = document.getElementById('save-list-item')
 
+
+let burnerButton = document.getElementById('object-burner');
 // setup test array
 let makeNewList = {
     id: 1,
@@ -42,8 +45,6 @@ let makeNewList = {
     details: 'enter your new list item here',
     items: ['milk', 'cheese', 'butter']
 }
-
-
 let oneArrayNote
 // Save Array (Add keywqords later?)
 if (getFromLocalStorage('oneArrayNote') === null) {
@@ -53,7 +54,6 @@ if (getFromLocalStorage('oneArrayNote') === null) {
     oneArrayNote = getFromLocalStorage('oneArrayNote')
 }
 
-// clean up oneArrayNote of empty arrays
 oneArrayNote.forEach(obj => {
     console.log('obj.id', obj.id)
     if (obj.length === 0) {
@@ -65,13 +65,10 @@ oneArrayNote.forEach(obj => {
 // oneArrayNote = getFromLocalStorage('oneArrayNote')
 console.log(oneArrayNote)
 
-
-// get oneArrayList from local storage
 let oneArrayListTemp = getFromLocalStorage('oneArrayList')
 
 console.log('oneArraList', oneArrayListTemp)
 
-// clean oneArrayList
 if (oneArrayListTemp === null) {
     oneArrayList = [];
 } else {
@@ -79,16 +76,33 @@ if (oneArrayListTemp === null) {
 }
 
 
+
 function arrayFilter(obj) {
     // console.log('arrayFilter', obj.id)
     if (obj.id !== undefined)
         return obj
 }
+// console.log('oneArraList', oneArrayList)
+// Save Array (Add keywqords later?)
+// if (getFromLocalStorage('oneArrayList') === null) {
+//     oneArrayList = []
+//     console.log('its null')
+// } else {
+//     oneArrayList = getFromLocalStorage('oneArrayList')
+// }
+
+// oneArrayList.forEach(obj => {
+//     console.log('obj.id', oneArrayList.indexOf(obj), obj.id)
+//     if (obj.id === undefined) {
+//         oneArrayList.splice(oneArrayList.indexOf(obj), 1)
+//         deleteList(obj)
+//     }
+// })
 
 
 let listItems = []
 
-// idNum start
+// idNum
 let noteIdNum = 1;
 let listIdNum = 1;
 
@@ -122,18 +136,16 @@ function editNote(note) {
     let editStartTitleText = editObj.title
     let editStartDetailsText = editObj.details
     let editStartItems = editObj.items
-    // set edit save and cancel buttons
+    // console.log('editStart', editStartItems)
     let saveButton = document.getElementById('edit-div');
     let cancelButton = document.getElementById('delete-div');
 
-    // setup ,modal
     let modalDiv = document.getElementById('modal-div')
     let h1 = document.getElementById("h1-modal")
     let divContent = document.getElementById('divcontent-modal');
     let h1EditText = document.createElement('input');
     let divEditText = document.createElement('textarea');
 
-    // set innerText of buttons
     saveButton.innerText = 'SAVE';
     saveButton.className = 'save-confirm-buttons'
 
@@ -143,18 +155,26 @@ function editNote(note) {
     h1.style.visibility = 'hidden'
     divContent.style.visibility = 'hidden';
 
-
-    // grab edited details
     divEditText.id = 'edited-details'
     let editedDetails = document.getElementById('edited-details')
     // console.log('edited-details', editedDetails)
     h1EditText.value = editStartTitleText;
-    //set modal setyle
+
+    // console.log('edited-details', editedDetails)
+
+
+
+    // let additionalListItems = collectListItems(makeMoreListItems)
+    // console.log('additionalListItems', additionalListItems)
+
     modalDiv.style.display = 'flex';
     modalDiv.style.flexDirection = 'column';
 
+
+
     divEditText.innerText = editStartDetailsText;
-    // create secondary part of modal based on list or note
+    // console.log('editStartDetailsText', editStartDetailsText)
+    // console.log('editNote-divEditText', divEditText.innerText)
     if (noteListSelector === 0) {
 
         let makeMoreListItem = document.createElement('textarea')
@@ -172,49 +192,47 @@ function editNote(note) {
         })
     }
 
-    // try o get innertext to take in next step
+
+
+
+
+
+    // console.log('editStartDetailsText', editStartDetailsText)
+    // console.log('editNote-divEditText', divEditText.innerText)
     let randomText = divEditText.innerText
     console.log('randomText', randomText)
-    // create save actions
+
     saveButton.addEventListener('click', function () {
         if (editSwitch === 'True') {
-            editObj.title = h1EditText.value;
-            editObj.details = randomText
+            editObj.title = h1EditText.value
+            console.log('editNote-divEditText', divEditText.innerText)
+
+            editObj.details = randomText;
+            console.log('editNote-saveButton-editOBJ', editObj)
+            if (noteListSelector === 0) {
+                oneArrayNote[note.id - 1] = editObj
+            }
+            if (noteListSelector === 1) {
+                let itemInputs = document.querySelectorAll('.list-item-input')
+                editObj.items = []
+                itemInputs.forEach(item => {
+                    if (item.value !== "") {
+                        console.log('itemInputs', item.value)
+                        editObj.items.push(item.value)
+                    }
+                })
+                console.log('editObj', editObj.items, 'noteid', [note.id - 1])
+                oneArrayList.splice([note.id - 1], 1)
+                oneArrayList.splice([note.id - 1], 0, editObj)
+                console.log('oneArrayList', oneArrayList)
+                // oneArrayList.push(editObj)
+            }
+            modalDiv.remove(divEditText);
+            h1EditText.remove()
+            refreshNoteDisplay()
+            toggleModal()
         }
-
-        editObj.details = randomText;
-        console.log('editNote-saveButton-editOBJ', editObj)
-
-        // set edited object to arrayed note object
-        if (noteListSelector === 0) {
-            oneArrayNote[note.id - 1] = editObj
-        }
-
-        // set edited object to arrayed list
-        if (noteListSelector === 1) {
-            let itemInputs = document.querySelectorAll('.list-item-input')
-            editObj.items = []
-            itemInputs.forEach(item => {
-                if (item.value !== "") {
-                    console.log('itemInputs', item.value)
-                    editObj.items.push(item.value)
-                }
-            })
-            console.log('editObj', editObj.items, 'noteid', [note.id - 1])
-            oneArrayList.splice([note.id - 1], 1)
-            oneArrayList.splice([note.id - 1], 0, editObj)
-            console.log('oneArrayList', oneArrayList)
-            // oneArrayList.push(editObj)
-        }
-
-        // close modal
-        modalDiv.remove(divEditText);
-        h1EditText.remove()
-        refreshNoteDisplay()
-        toggleModal()
     })
-
-    // cancel modal
     cancelButton.addEventListener('click', function () {
         if (editSwitch === 'True') {
             deEnergizeModal()
@@ -227,23 +245,20 @@ function editNote(note) {
 
 }
 
-
-// attempt to gather list items in a textarea
 function collectListItems(textArea) {
     return textArea.split('\n')
 }
 
 // delete note from array
 function deleteNote(note) {
-    console.log('deleteNote', note, [note.id - 1])
+    console.log('deleteNote', note)
     oneArrayNote.splice([note.id - 1], 1)
-    console.log('deleteNote-onearray', oneArrayNote[note.id - 1])
     localStorage.removeItem('oneArrayNote', oneArrayNote[note.id - 1]);
     deEnergizeModal();
     refreshNoteDisplay()
 }
 
-// delete list from array
+
 function deleteList(list) {
     console.log('deleteList', list)
     oneArrayList.splice([list.id - 1], 1)
@@ -251,6 +266,12 @@ function deleteList(list) {
     deEnergizeModal();
     refreshNoteDisplay()
 }
+
+
+
+
+
+
 
 // +++++++++++++++++++++++++++++++
 // LIST SECTION BELOW
@@ -260,7 +281,6 @@ function selectList(optionValue) {
     let selectedList = oneArrayList[optionValue]
     // console.log(selectedList)
 
-    // setup lists modal
     listTitle.value = selectedList.title;
     listDetails.innerText = selectedList.details
     listItems = selectedList.items;
@@ -268,7 +288,6 @@ function selectList(optionValue) {
     listItems.forEach(listItem => {
         console.log('selectList', listItem)
         let li = document.createElement('li');
-        li.innerText = listItem
         listItemsUL.append(li);
     })
 
@@ -278,7 +297,7 @@ function selectList(optionValue) {
 
 function dynamicDropdownList() {
 
-    // setup dropdown menu based o arrays
+
     let initialOption = document.createElement('option');
     initialOption.className = 'option-new-list'
     initialOption.value = 0;
@@ -311,7 +330,7 @@ function dynamicDropdownList() {
 // build cards to display in area
 function buildCard(obj, noteList) {
 
-    // build out card for note
+
     if (noteList === 'note') {
         let card = document.createElement("div");
         card.className = 'card fade-in'
@@ -332,8 +351,6 @@ function buildCard(obj, noteList) {
         })
 
     }
-
-    // build out card for lists
     if (noteList === 'list') {
         let card = document.createElement("div");
         card.className = 'card fade-in';
@@ -356,14 +373,14 @@ function buildCard(obj, noteList) {
 
 
         })
-
-        // adduniversals to card
         let h1 = document.createElement("h1");
         h1.className = 'headline'
         h1.innerText = obj.title;
         card.append(h1)
 
-        // add card eventlidtener for edit and delete
+
+        // card.append(div)
+
         card.addEventListener('click', function () {
 
             modalEnergizer(obj)
@@ -444,34 +461,30 @@ function setIDNum(arrayToSetFrom) {
 // seitch visible aspect of app
 function switcher() {
     // console.log('switch hit')
-    switcherButton.addEventListener('mouseover', function () {
-        switcherButton.style.backgroundColor = "blue"
-    })
-    switcherButton.addEventListener('mouseexit', function () {
-        switcherButton.style.backgroundColor = "initial"
-    })
-    // switcherButton.hover.style.backgroundColor = "blue"
+
     if (noteSection.style.display === "flex") {
+
         noteSection.style.display = "none";
         listSection.style.display = "flex";
         noteDisplayArea.style.display = "none";
         listDisplayArea.style.display = "flex";
-        refreshNoteDisplay()
-        noteListSelector = 0;
+        noteListSelector = 1;
         switcherButton.innerText = 'Click For Notes'
-        switcherButton.style.backgroundColor = 'purple'
-        switcherButton.style.color = 'orange';
+        refreshNoteDisplay()
+        switcherButton.style.backgroundColor = 'purple';
     } else {
         noteSection.style.display = "flex";
         listSection.style.display = "none";
         noteDisplayArea.style.display = "flex";
         listDisplayArea.style.display = "none";
-        refreshNoteDisplay()
-        noteListSelector = 1;
+
+        noteListSelector = 0;
         switcherButton.innerText = 'Click For Lists'
         switcherButton.style.backgroundColor = 'green';
+        refreshNoteDisplay()
     }
-    quoteAPI()
+
+
 
 }
 
@@ -544,10 +557,9 @@ function modalEnergizer(item) {
 
     deleteDiv.addEventListener('click', function () {
         if (editSwitch === 'False') {
-            if (noteListSelector === 1) {
-                deleteNote(item)
-            }
             if (noteListSelector === 0) {
+                deleteNote(item)
+            } else {
                 deleteList(item)
             }
 
@@ -580,6 +592,11 @@ function toggleModal() {
     modal.classList.toggle('show-modal')
 }
 
+function toggleSplash() {
+    splash.classList.toggle('show-splash')
+
+}
+
 
 // +++++++++++++++++++++++++++++++
 // ACTION!!
@@ -592,6 +609,7 @@ noteSaveButton.addEventListener('click', function () {
     console.log("oneArrayNote", oneArrayNote)
     saveToLocalStorage(oneArrayNote);
 
+    playAudio()
     refreshNoteDisplay();
     console.log('');
     console.log('');
@@ -633,7 +651,18 @@ listInputButton.addEventListener('click', function () {
 
 })
 
+burnerButton.addEventListener('click', function () {
+    if (noteListSelector === 0) {
+        localStorage.removeItem('oneArrayNote')
+        window.location.reload()
+    }
+    if (noteListSelector === 1) {
+        localStorage.removeItem('oneArrayList')
+        window.location.reload()
+    }
+})
 
+// coverMe();
 // refresh display area
 refreshNoteDisplay();
 
@@ -675,3 +704,27 @@ function removeFromLocalStorage(arrayToRemove, index) {
 
 }
 // save elements to oneArrayList when button clicked
+
+function playAudio() {
+    let scribbleSound = new Audio('./snd/82610__indigosierra__scribble.mp3');
+    scribbleSound.play()
+}
+
+// function coverMe() {
+
+//     let div = document.createElement('div')
+
+//     div.id = 'start-modal-body'
+
+//     // if (splash === 0) {
+//     modal.classList.toggle('show-splash')
+
+//     div.style.display = 'block'
+//     div.style.backgroundColor = 'black';
+//     div.style.width = 'cover'
+//     div.style.height = 'cover'
+//     div.innerText = 'balalskdfalskdjfas'
+
+
+//     modal.append(div)
+// }
